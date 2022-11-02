@@ -18,7 +18,7 @@ openchat = OpenChat(model='blender.small', device='cpu', environment='custom')
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, message.from_user.id, "Hello {name}. First, you need to choose the person you want to talk to. Click to /choose".format(name=message.from_user.first_name))
+    bot.send_message(message.chat.id, "Hello {name}. First, you need to choose the person you want to talk to. Click to /choose".format(name=message.from_user.first_name))
     openchat.start()
 
 def pers_markup():
@@ -34,39 +34,39 @@ def pers_markup():
 def callback_query(call):
     if call.data == "pers1":
         openchat.setup_persona(call.message.from_user.id, "Good man, likes science, IT, computer. He is from London")
-        bot.send_message(call.message.chat.id, call.message.from_user.id, "Ok, let's talk")
+        bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers2":
         openchat.setup_persona(call.message.from_user.id, "Woman, tourist, from New York, USA, was in Africa")
-        bot.send_message(call.message.chat.id, call.message.from_user.id, "Ok, let's talk")
+        bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers3":
         openchat.setup_persona(call.message.from_user.id, "Girl, student, likes anime and cats")
-        bot.send_message(call.message.chat.id, call.message.from_user.id, "Ok, let's talk")
+        bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers4":
-        bot.send_message(call.message.chat.id, call.message.from_user.id, "Not ready right now. Choose another option")
+        bot.send_message(call.message.chat.id, "Not ready right now. Choose another option")
 
 @bot.message_handler(commands=['choose'])
 def choose_persona(message):
     openchat.start()
-    bot.send_message(message.chat.id, message.from_user.id, "Choose who you want to talk to", reply_markup=pers_markup())
+    bot.send_message(message.chat.id, "Choose who you want to talk to", reply_markup=pers_markup())
 
 @bot.message_handler(commands=['wiki'])#TODO: meaning from wiki
 def meaning_message(message):
-    bot.send_message(message.chat.id, message.from_user.id, "Meaning of word from wiki. Not ready right now")
+    bot.send_message(message.chat.id, "Meaning of word from wiki. Not ready right now")
 
 @bot.message_handler(commands=['tr'])#TODO: translate to several lang
 def translation_message(message):
-    bot.send_message(message.chat.id, message.from_user.id, "Translation of word to several lang. Not ready right now")
+    bot.send_message(message.chat.id, "Translation of word to several lang. Not ready right now")
 
 @bot.message_handler(commands=['stat'])#TODO: statistics
 def statistics_message(message):
-    bot.send_message(message.chat.id, message.from_user.id, "Statistics. Not ready right now")
+    bot.send_message(message.chat.id, "Statistics. Not ready right now")
 
 @bot.message_handler(commands=['donate'])
 def donate_message(message):
-    bot.send_message(message.chat.id, message.from_user.id,
+    bot.send_message(message.chat.id,
                      "I'm learning English and that's why I created this AI bot. And I wanted to share with you. I hope, you like it.\n"
                      "You can choose any amount of money. Your money will be used to pay for servers and improve the bot.\n"
-                     "Thank you.\n\n"
+                     "Thank you.\n"
                      "Sincerely, Scientist\n\n"
                      #"Patreon link\n"#TODO: add Patreon, Boosty, Bitcoin
                      #"\n"
@@ -77,18 +77,18 @@ def donate_message(message):
                      #"Bitcoin wallet\n"
                      #"\n"
                      "VISA\n"
-                     "4374 6901 0038 9301\n"
+                     "4374 6901 0038 9301\n\n"
                      "For all questions and suggestions, you can write in telegram\n"
                      "https://t.me/FuturationAI")
 
 @bot.message_handler(content_types=['text'])
 def message(message):
     bot.send_chat_action(message.chat.id, 'typing')
-    bot_massage = openchat.predict_message(message.text)
-    bot.send_message(message.chat.id, message.from_user.id, bot_massage)
+    bot_massage = openchat.predict_message(message.from_user.id, message.text)
+    bot.send_message(message.chat.id, bot_massage)
 
 @bot.message_handler(content_types=['audio'])
 def audio_message(message):
-    bot.send_message(message.chat.id, message.from_user.id, "Audio messages are not ready right now")
+    bot.send_message(message.chat.id, "Audio messages are not ready right now")
 
 bot.infinity_polling()
