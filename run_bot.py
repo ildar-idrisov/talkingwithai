@@ -10,7 +10,6 @@ bot = telebot.TeleBot("5621518936:AAHBQTGtFHei6tHUD3WI_tFRPrUA2BV6SRw")
 
 #TODO: Store message.from_user info to DB, but remember GDPR
 #TODO: Write details to default persons, and check it out
-#TODO: Add to git
 #TODO: Run docker
 
 #openchat = OpenChat(model='blender.medium', device='cpu', environment='custom')
@@ -64,22 +63,22 @@ def statistics_message(message):
 @bot.message_handler(commands=['donate'])
 def donate_message(message):
     bot.send_message(message.chat.id,
+                     "*Hi, and thank you*\n"
                      "I'm learning English and that's why I created this AI bot. And I wanted to share with you. I hope, you like it.\n"
                      "You can choose any amount of money. Your money will be used to pay for servers and improve the bot.\n"
-                     "Thank you.\n"
                      "Sincerely, Scientist\n\n"
                      #"Patreon link\n"#TODO: add Patreon, Boosty, Bitcoin
-                     #"\n"
+                     #"\n\n"
                      #"Boosty link\n"
-                     #"\n"
-                     "ETH wallet (or any ERC20/BEP20 token)\n"
-                     "0xE7D1C11fefcb8c559DDb8838423553a8FB242712\n"
+                     #"\n\n"
+                     "*ETH wallet (or any ERC20/BEP20 token)*\n"
+                     "0xE7D1C11fefcb8c559DDb8838423553a8FB242712\n\n"
                      #"Bitcoin wallet\n"
-                     #"\n"
-                     "VISA\n"
+                     #"\n\n"
+                     "*VISA*\n"
                      "4374 6901 0038 9301\n\n"
-                     "For all questions and suggestions, you can write in telegram\n"
-                     "https://t.me/FuturationAI")
+                     "For all questions and suggestions, you can write to me\n"
+                     "https://t.me/Scientist_Futuration", parse_mode='Markdown')
 
 @bot.message_handler(content_types=['text'])
 def message(message):
