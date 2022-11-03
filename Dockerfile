@@ -29,3 +29,4 @@ RUN python3 -m pip install -r openchat/requirements.txt
 #RUN cp BST400Mdistill_v1.1.tgz ...
 
 WORKDIR /talkingwithai
+CMD ["python3", run_bot.py]
