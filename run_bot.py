@@ -65,7 +65,7 @@ def donate_message(message):
     bot.send_message(message.chat.id,
                      "*Hi, and thank you*\n"
                      "I'm learning English and that's why I created this AI bot. And I wanted to share with you. I hope, you like it.\n"
-                     "You can choose any amount of money. Your money will be used to pay for servers and improve the bot.\n"
+                     "You can donate any amount of money. Your money will be used to pay for servers and improve the bot.\n"
                      "Sincerely, Scientist\n\n"
                      #"Patreon link\n"#TODO: add Patreon, Boosty, Bitcoin
                      #"\n\n"
