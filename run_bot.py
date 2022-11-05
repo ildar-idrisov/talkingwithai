@@ -10,7 +10,7 @@ bot = telebot.TeleBot("5621518936:AAHBQTGtFHei6tHUD3WI_tFRPrUA2BV6SRw")
 
 #TODO: Store message.from_user info to DB, but remember GDPR
 #TODO: Write details to default persons, and check it out
-#TODO: Run docker
+#TODO: Add /thankyou with the list of patrons "and other unknown but knightly sirs who donated through the crypt"
 
 #openchat = OpenChat(model='blender.medium', device='cpu', environment='custom')
 openchat = OpenChat(model='blender.small', device='cpu', environment='custom')
@@ -67,18 +67,19 @@ def donate_message(message):
                      "I'm learning English and that's why I created this AI bot. And I wanted to share with you. I hope, you like it.\n"
                      "You can donate any amount of money. Your money will be used to pay for servers and improve the bot.\n"
                      "Sincerely, Scientist\n\n"
-                     #"Patreon link\n"#TODO: add Patreon, Boosty, Bitcoin
-                     #"\n\n"
-                     #"Boosty link\n"
-                     #"\n\n"
+                     "Patreon link\n"
+                     "https://www.patreon.com/talkingwithai\n\n"
+                     "Boosty link\n"
+                     "https://boosty.to/talkingwithai\n\n"
                      "*ETH wallet (or any ERC20/BEP20 token)*\n"
                      "0xE7D1C11fefcb8c559DDb8838423553a8FB242712\n\n"
-                     #"Bitcoin wallet\n"
+                     #"Bitcoin wallet\n"#TODO: add Bitcoin
                      #"\n\n"
-                     "*VISA*\n"
-                     "4374 6901 0038 9301\n\n"
+                     #"*VISA*\n"
+                     #"4374 6901 0038 9301\n\n"
                      "For all questions and suggestions, you can write to me\n"
-                     "https://t.me/Scientist_Futuration", parse_mode='Markdown')
+                     "https://t.me/Scientist_Futuration",
+                     parse_mode='Markdown')
 
 @bot.message_handler(content_types=['text'])
 def message(message):
