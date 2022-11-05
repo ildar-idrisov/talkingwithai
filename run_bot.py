@@ -11,6 +11,7 @@ bot = telebot.TeleBot("5621518936:AAHBQTGtFHei6tHUD3WI_tFRPrUA2BV6SRw")
 #TODO: Store message.from_user info to DB, but remember GDPR
 #TODO: Write details to default persons, and check it out
 #TODO: Add /thankyou with the list of patrons "and other unknown but knightly sirs who donated through the crypt"
+#TODO: Write main function, move all command to itsown funcs, use changeable parameters as external
 
 #openchat = OpenChat(model='blender.medium', device='cpu', environment='custom')
 openchat = OpenChat(model='blender.small', device='cpu', environment='custom')
