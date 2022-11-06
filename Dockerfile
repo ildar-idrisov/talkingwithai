@@ -30,4 +30,4 @@ RUN python3 -m pip install --default-timeout=1000 -r openchat/requirements.txt
 #RUN cp BST400Mdistill_v1.1.tgz ...
 
 WORKDIR /talkingwithai
-CMD ["python3", "run_bot.py"]
+CMD ["/bin/bash", "./start.sh"]
