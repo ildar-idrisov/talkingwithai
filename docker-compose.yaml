@@ -5,13 +5,13 @@ services:
     build:
       context: ./
     command: bash -c "
-      python ./db/generate_tables.py &&
-      python ./db/operate_with_db.py &&
-      python ./run_bot.py"
+      python /talkingwithai/openchat/db/init_db.py && 
+      python /talkingwithai/run_bot.py"
     depends_on:
       - postgres
     environment:
-      - PYTHONPATH=.
+      - PYTHONPATH=/talkingwithai
+      - TALKING_CONF=/talkingwithai/etc/config.ini
     volumes:
       -
         type: bind
