@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  talkingwithai:
+    build:
+      context: ./
+    command: bash -c "
+      python ./db/generate_tables.py &&
+      python ./db/operate_with_db.py &&
+      python ./run_bot.py"
+    depends_on:
+      - postgres
+    environment:
+      - PYTHONPATH=.
+    volumes:
+      -
+        type: bind
+        source: ./
+        target: /talkingwithai
+
+  postgres:
+    image: postgres:11.7
+    environment:
+      - POSTGRES_PASSWORD=talkingwithai
+      - POSTGRES_USER=talkingwithai
