@@ -7,7 +7,6 @@ from openchat.agents.reddit import RedditAgent
 from openchat.agents.unlikelihood import UnlikelihoodAgent
 from openchat.agents.wow import WizardOfWikipediaGenerationAgent
 from openchat.db.models import Message
-from openchat.db.session import DB
 from openchat.envs.interactive import InteractiveEnvironment
 from openchat.envs.custom import CustomEnvironment
 from openchat.utils.terminal_utils import draw_openchat
@@ -68,13 +67,13 @@ class OpenChat(object):
         elif name == "interactive_web":
             return InteractiveWebEnvironment()
         elif name == "webserver":
-            raise NotImplemented
+            raise NotImplementedError
         elif name == "facebook":
-            raise NotImplemented
+            raise NotImplementedError
         elif name == "kakaotalk":
-            raise NotImplemented
+            raise NotImplementedError
         elif name == "whatsapp":
-            raise NotImplemented
+            raise NotImplementedError
         elif name == "custom":
             return CustomEnvironment()
 

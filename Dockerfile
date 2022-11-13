@@ -1,5 +1,7 @@
 FROM python:3.7
 
+ARG DATABASE_NAME
+
 RUN apt-get update && apt-get install -y locales locales-all
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -13,16 +15,19 @@ RUN apt-get update --fix-missing && \
     pip3 install virtualenv && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -p /talkingwithai
+RUN mkdir -p /talkingwithai /ve
 
 # TelegramBot
 COPY ./requirements.txt /talkingwithai/requirements.txt
 
 RUN virtualenv -p python /ve
 RUN chmod +x /ve/bin/*
-ENV PATH="/ve/bin/:/opt/bin:$PATH"
+ENV PATH="/ve/bin/:$PATH"
 
 RUN pip install -U pip
 RUN pip install -r /talkingwithai/requirements.txt
 
 COPY . /talkingwithai
+
+ENV DATABASE_NAME=${DATABASE_NAME}
+RUN python /talkingwithai/scripts/generate_config.py

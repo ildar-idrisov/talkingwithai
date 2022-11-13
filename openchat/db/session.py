@@ -4,40 +4,45 @@ from sqlalchemy.orm import Session
 from config import get_postgres_url
 
 
-class DB(object):
-    _session = None
-    _engine = None
+class DatabaseInterface:
+
+    def __init__(self) -> None:
+        self._engine = create_engine(get_postgres_url(), echo=True)
+        self._session = Session(self._engine)
+
+
+class DB:
+    _database_interface = None
 
     @classmethod
     def session(cls) -> Session:
-        return cls._session
+        return cls._database_interface._session
 
     @classmethod
     def engine(cls):
-        return cls._engine
-
-    @classmethod
-    def remove(cls):
-        cls._session = None
-        cls._engine = None
+        return cls._database_interface._engine
 
     @classmethod
     def init_database_interface(cls):
-        if cls._session:
+        if cls._database_interface:
             raise ValueError("Database has already been initialized")
-        cls._engine = create_engine(get_postgres_url(), echo=True)
-        cls._session = Session(cls._engine)
-        # if not cls._engine.has_table("talkingwithai_user"):
-        #     raise ValueError('The database is empty. '
-        #                      'Please initialize the database with "python ./openchat/db/init_db.py"')
+        cls._database_interface = DatabaseInterface()
 
     @classmethod
     def del_database_interface(cls):
-        if not cls._session:
+        if not cls._database_interface:
             raise ValueError("Database interface hasn't been initialized")
-        cls._session = None
-        cls._engine = None
+        cls._database_interface = None
 
     @classmethod
     def is_database_interface_initialized(cls):
-        return cls._session is not None
+        return cls._database_interface is not None
+
+    @classmethod
+    def validate_database(cls):
+        if not cls.is_database_interface_initialized():
+            raise ValueError("Database interface hasn't been initialized")
+
+        if not cls._database_interface._engine.has_table("talkingwithai_user"):
+            raise ValueError('The database is empty. '
+                             'Please initialize the database with "python ./openchat/db/init_db.py"')
