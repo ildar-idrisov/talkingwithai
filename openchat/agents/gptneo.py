@@ -1,4 +1,3 @@
-import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from openchat.base import DecoderLM

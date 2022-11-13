@@ -47,14 +47,14 @@ class BaseAgent(ABC):
 
     @abstractmethod
     def predict(self, text: str, **kwargs) -> Dict[str, str]:
-        raise NotImplemented
+        raise NotImplementedError
 
     @staticmethod
     @abstractmethod
     def default_maxlen():
-        raise NotImplemented
+        raise NotImplementedError
 
     @staticmethod
     @abstractmethod
     def available_models():
-        raise NotImplemented
+        raise NotImplementedError

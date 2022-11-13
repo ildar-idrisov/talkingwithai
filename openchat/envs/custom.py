@@ -1,6 +1,5 @@
 import gc
 import random
-import sys
 
 import torch
 
@@ -26,7 +25,7 @@ class CustomEnvironment(BaseEnvironment):
 
         if isinstance(agent, PromptAgent):
             user_name, bot_name = self.pre_dialog_output
-            user_message = input_message #user_name.upper()
+            user_message = input_message  # user_name.upper()
         else:
             user_message = input_message
 
@@ -74,7 +73,7 @@ class CustomEnvironment(BaseEnvironment):
 
     def pre_dialog_for_prompt(self, agent, user_id):
         user_name = cinput(
-            f"[YOUR NAME]: ",
+            "[YOUR NAME]: ",
             color=self.special_color,
         )
 
@@ -107,7 +106,7 @@ class CustomEnvironment(BaseEnvironment):
             )
 
         cprint(
-            f"[STORY]: Story setting complete.\n",
+            "[STORY]: Story setting complete.\n",
             color=self.special_color,
         )
 
@@ -129,8 +128,8 @@ class CustomEnvironment(BaseEnvironment):
 
     def pre_dialog_for_wow(self, agent, user_id):
         cprint(
-            f"[SYSTEM]: Please input topic for Wizard of wikipedia.\n"
-            f"[SYSTEM]: Enter '.topic' if you want to check random topic examples.\n",
+            "[SYSTEM]: Please input topic for Wizard of wikipedia.\n"
+            "[SYSTEM]: Enter '.topic' if you want to check random topic examples.\n",
             color=self.system_color)
 
         while True:
@@ -152,7 +151,7 @@ class CustomEnvironment(BaseEnvironment):
             else:
                 if _topic in agent.topic_list:
                     cprint(
-                        f"[TOPIC]: Topic setting complete.\n",
+                        "[TOPIC]: Topic setting complete.\n",
                         color=self.special_color,
                     )
                     agent.set_topic(_topic)

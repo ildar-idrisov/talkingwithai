@@ -57,7 +57,7 @@ class ParlaiClassificationAgent(ParlaiAgent):
 
     @abstractmethod
     def labels(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def predict(self, text: str, **kwargs):
         message = self.tokenizer(text)

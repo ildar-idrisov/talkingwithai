@@ -50,7 +50,7 @@ class InteractiveEnvironment(BaseEnvironment):
 
             if user_message == ".exit":
                 cprint(
-                    f"[SYSTEM]: good bye.\n",
+                    "[SYSTEM]: good bye.\n",
                     color=self.system_color,
                 )
                 exit(0)
@@ -58,7 +58,7 @@ class InteractiveEnvironment(BaseEnvironment):
 
             if user_message == ".reset":
                 cprint(
-                    f"[SYSTEM]: reset all histories.\n",
+                    "[SYSTEM]: reset all histories.\n",
                     color=self.system_color,
                 )
                 self.clear_histories(self.user_id)
@@ -111,7 +111,7 @@ class InteractiveEnvironment(BaseEnvironment):
 
     def pre_dialog_for_prompt(self, agent):
         user_name = cinput(
-            f"[YOUR NAME]: ",
+            "[YOUR NAME]: ",
             color=self.special_color,
         )
 
@@ -144,7 +144,7 @@ class InteractiveEnvironment(BaseEnvironment):
             )
 
         cprint(
-            f"[STORY]: Story setting complete.\n",
+            "[STORY]: Story setting complete.\n",
             color=self.special_color,
         )
 
@@ -187,8 +187,8 @@ class InteractiveEnvironment(BaseEnvironment):
 
     def pre_dialog_for_wow(self, agent):
         cprint(
-            f"[SYSTEM]: Please input topic for Wizard of wikipedia.\n"
-            f"[SYSTEM]: Enter '.topic' if you want to check random topic examples.\n",
+            "[SYSTEM]: Please input topic for Wizard of wikipedia.\n"
+            "[SYSTEM]: Enter '.topic' if you want to check random topic examples.\n",
             color=self.system_color)
 
         while True:
@@ -210,7 +210,7 @@ class InteractiveEnvironment(BaseEnvironment):
             else:
                 if _topic in agent.topic_list:
                     cprint(
-                        f"[TOPIC]: Topic setting complete.\n",
+                        "[TOPIC]: Topic setting complete.\n",
                         color=self.special_color,
                     )
                     agent.set_topic(_topic)

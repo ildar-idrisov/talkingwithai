@@ -71,12 +71,9 @@ class BaseEnvironment(ABC):
         return prefix + "".join(histories_for_current_turn) + user_input
 
     def is_empty(self, user_id):
-        return len(self.histories[user_id]["user_message"]) == 0 and \
-               len(self.histories[user_id]["bot_message"]) == 0 and \
-               len(self.histories[user_id]["model_input"]) == 0 and \
-               len(self.histories[user_id]["prefix"]) == 0 and \
-               len(self.histories[user_id]["chosen_topic"]) == 0
+        relations = ("user_message", "bot_message", "model_input", "prefix", "chosen_topic")
+        return not any([self.histories[user_id][relation] for relation in relations])
 
     @abstractmethod
     def start(self, agent: BaseAgent):
-        raise NotImplemented
+        raise NotImplementedError
