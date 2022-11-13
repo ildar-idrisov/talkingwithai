@@ -1,5 +1,6 @@
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 from openchat.base import DecoderLM
 from openchat.base.agents.prompt import PromptAgent
 

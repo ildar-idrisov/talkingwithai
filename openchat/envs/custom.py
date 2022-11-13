@@ -1,16 +1,11 @@
+import gc
 import random
 import sys
-import torch
-import gc
 
+import torch
+
+from openchat.base import BaseAgent, ConvAI2Agent, PromptAgent, SingleTurn, WizardOfWikipediaAgent
 from openchat.base.envs.base import BaseEnvironment
-from openchat.base import (
-    BaseAgent,
-    ConvAI2Agent,
-    WizardOfWikipediaAgent,
-    SingleTurn,
-    PromptAgent,
-)
 
 
 class CustomEnvironment(BaseEnvironment):

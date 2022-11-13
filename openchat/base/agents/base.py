@@ -1,7 +1,7 @@
-import parlai.utils.logging as logging
-
 from abc import ABC, abstractmethod
 from typing import Dict
+
+import parlai.utils.logging as logging
 
 logging.disable()
 

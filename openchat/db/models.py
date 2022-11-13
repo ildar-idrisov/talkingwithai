@@ -1,7 +1,6 @@
 from enum import Enum as EnumConstant
 
-from sqlalchemy import (TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer,
-                        String, Text, func)
+from sqlalchemy import TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import backref, relationship
 
 from openchat.db.base import Base

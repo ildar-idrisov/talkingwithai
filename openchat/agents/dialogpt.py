@@ -1,5 +1,6 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
-from openchat.base import HuggingfaceAgent, DecoderLM
+
+from openchat.base import DecoderLM, HuggingfaceAgent
 
 
 class DialoGPTAgent(HuggingfaceAgent, DecoderLM):

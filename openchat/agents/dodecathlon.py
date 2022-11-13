@@ -1,15 +1,8 @@
+from parlai.core.agents import add_datapath_and_model_args, create_agent_from_opt_file
 from parlai.core.build_data import modelzoo_path
-from parlai.core.agents import (
-    add_datapath_and_model_args,
-    create_agent_from_opt_file,
-)
+
+from openchat.base import ConvAI2Agent, ParlaiGenerationAgent, Seq2SeqLM, WizardOfWikipediaAgent
 from openchat.utils import inherit
-from openchat.base import (
-    ParlaiGenerationAgent,
-    ConvAI2Agent,
-    WizardOfWikipediaAgent,
-    Seq2SeqLM,
-)
 
 
 class DodecathlonAgent(ParlaiGenerationAgent, Seq2SeqLM):

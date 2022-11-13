@@ -1,18 +1,10 @@
 import importlib
+
 from parlai.core.agents import add_datapath_and_model_args
 from parlai.core.build_data import modelzoo_path
 
-from openchat.utils import (
-    inherit,
-    create_agent_from_opt_file_and_model_class,
-)
-
-from openchat.base import (
-    ParlaiGenerationAgent,
-    Seq2SeqLM,
-    ConvAI2Agent,
-    WizardOfWikipediaAgent,
-)
+from openchat.base import ConvAI2Agent, ParlaiGenerationAgent, Seq2SeqLM, WizardOfWikipediaAgent
+from openchat.utils import create_agent_from_opt_file_and_model_class, inherit
 
 
 class UnlikelihoodAgent(ParlaiGenerationAgent, Seq2SeqLM):
