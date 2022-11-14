@@ -1,6 +1,6 @@
-#FROM nvidia/cuda:11.4.1-cudnn8-devel-ubuntu18.04
-#FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
-FROM python:3
+FROM python:3.10
+
+ARG DATABASE_NAME
 
 RUN apt-get update && apt-get install -y locales locales-all
 ENV LC_ALL en_US.UTF-8
@@ -15,23 +15,19 @@ RUN apt-get update --fix-missing && \
     pip3 install virtualenv && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -p /talkingwithai
+RUN mkdir -p /talkingwithai /ve
 
 # TelegramBot
 COPY ./requirements.txt /talkingwithai/requirements.txt
 
-RUN virtualenv -p python3 /ve
+RUN virtualenv -p python /ve
 RUN chmod +x /ve/bin/*
-ENV PATH="/ve/bin/:/opt/bin:$PATH"
+ENV PATH="/ve/bin/:$PATH"
 
 RUN pip install -U pip
-RUN python3 -m pip install --default-timeout=1000 -r /talkingwithai/requirements.txt
+RUN pip install -r /talkingwithai/requirements.txt
 
 COPY . /talkingwithai
 
-# OpenChat
-WORKDIR /talkingwithai
-RUN git clone https://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@github.com/ildar-idrisov/openchat.git
-RUN python3 -m pip install --default-timeout=1000 -r openchat/requirements.txt
-#RUN wget --show-progress -T 1000 http://parl.ai/downloads/_models/blender/BST400Mdistill_v1.1.tgz
-#RUN cp BST400Mdistill_v1.1.tgz ...
+ENV DATABASE_NAME=${DATABASE_NAME}
+RUN python /talkingwithai/scripts/generate_config.py

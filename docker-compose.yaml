@@ -4,22 +4,29 @@ services:
   talkingwithai:
     build:
       context: ./
+      args:
+        DATABASE_NAME: ${DATABASE_NAME}
+    restart: on-failure
     command: bash -c "
-      python ./db/generate_tables.py &&
-      python ./db/operate_with_db.py &&
-      python ./run_bot.py"
+      python /talkingwithai/openchat/db/init_db.py &&
+      python /talkingwithai/run_bot.py"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
-      - PYTHONPATH=.
+      - PYTHONPATH=/talkingwithai
+      - TALKING_CONF=/talkingwithai/etc/config.ini
     volumes:
-      -
-        type: bind
-        source: ./
-        target: /talkingwithai
+      - ./:/talkingwithai
+      - /talkingwithai/etc
 
   postgres:
     image: postgres:11.7
     environment:
-      - POSTGRES_PASSWORD=talkingwithai
-      - POSTGRES_USER=talkingwithai
+      - POSTGRES_PASSWORD=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_NAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_NAME}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5

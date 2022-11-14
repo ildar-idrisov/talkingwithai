@@ -1,8 +1,10 @@
 # Byte-compiled / optimized / DLL files
+.idea
+.env
 __pycache__/
 *.py[cod]
 *$py.class
-
+etc/local.ini
 # C extensions
 *.so
 
