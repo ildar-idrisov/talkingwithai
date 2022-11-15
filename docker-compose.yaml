@@ -1,6 +1,22 @@
 version: "3"
 
 services:
+
+  monitor:
+    build:
+      context: ./
+      dockerfile: Dockerfile.monitor
+      args:
+        DATABASE_NAME: ${DATABASE_NAME}
+    command: bash -c "gunicorn -w 4 -b 0.0.0.0:5000 monitor.wsgi"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - TALKING_CONF=/etc/config.ini
+    ports:
+      - 5000:5000
+
   talkingwithai:
     build:
       context: ./
@@ -15,10 +31,15 @@ services:
         condition: service_healthy
     environment:
       - PYTHONPATH=/talkingwithai
-      - TALKING_CONF=/talkingwithai/etc/config.ini
+      - TALKING_CONF=/etc/config.ini
     volumes:
       - ./:/talkingwithai
       - /talkingwithai/etc
+    healthcheck:
+      test: ["CMD-SHELL", "python /talkingwithai/db/validate_db.py"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   postgres:
     image: postgres:11.7

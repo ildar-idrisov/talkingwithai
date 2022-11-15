@@ -45,4 +45,4 @@ class DB:
 
         if not cls._database_interface._engine.has_table("talkingwithai_user"):
             raise ValueError('The database is empty. '
-                             'Please initialize the database with "python ./openchat/db/init_db.py"')
+                             'Please initialize the database with "python ./db/init_db.py"')

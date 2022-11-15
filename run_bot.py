@@ -1,7 +1,7 @@
 import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from openchat.db.session import DB
+from db.session import DB
 from openchat.openchat import OpenChat
 
 # TODO: Store message.from_user info to DB, but remember GDPR
