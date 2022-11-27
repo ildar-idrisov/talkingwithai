@@ -1,0 +1,26 @@
+FROM python:3.7
+
+ARG DATABASE_NAME
+
+# Python
+RUN apt-get update --fix-missing && \
+    apt-get install -y tar git vim && \
+    pip3 install virtualenv
+
+RUN mkdir -p /monitor /ve /etc
+
+COPY ./monitor/requirements.txt /monitor/requirements.txt
+
+RUN virtualenv -p python /ve
+RUN chmod +x /ve/bin/*
+ENV PATH="/ve/bin/:$PATH"
+
+RUN pip install -U pip
+RUN pip install --default-timeout=1000 -r /monitor/requirements.txt
+
+COPY . /monitor
+
+ENV DATABASE_NAME=${DATABASE_NAME}
+RUN python /monitor/scripts/generate_config.py
+
+WORKDIR /monitor

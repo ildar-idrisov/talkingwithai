@@ -1,5 +1,6 @@
-from openchat.db.base import Base
-from openchat.db.session import DB
+from db.base import Base
+from db.models import *  # noqa: F401,F403
+from db.session import DB
 
 
 def init_db():

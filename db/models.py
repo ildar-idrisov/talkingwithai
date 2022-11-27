@@ -1,18 +1,10 @@
-from enum import Enum as EnumConstant
-
-from sqlalchemy import TIMESTAMP, Boolean, Column, Enum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, SmallInteger, String, Text, func
 from sqlalchemy.orm import backref, relationship
 
-from openchat.db.base import Base
-from openchat.db.session import DB
+from db.base import Base
+from db.session import DB
 
-
-class Tire(EnumConstant):
-    """
-    Enumeration of possible tires for a user.
-    """
-
-    LEVEL_1 = "LEVEL_1"
+__all__ = ['User', 'Message', 'Topic', 'Prefix']
 
 
 class User(Base):
@@ -20,10 +12,25 @@ class User(Base):
     user_id = Column(Integer, primary_key=True)
     nickname = Column(String(256), nullable=True)
     name = Column(String(256), nullable=True)
-    tire = Column(Enum(Tire), nullable=True)
+    tire = Column(SmallInteger, nullable=True)
     is_admin = Column(Boolean, nullable=False, default=False)
     messages_limit = Column(Integer, nullable=False, default=0)  # 0 - no limit
     model_input = Column(String(256), nullable=True)
+    created_at = Column(TIMESTAMP, nullable=False, default=func.now())
+    enabled = Column(Boolean, nullable=False, default=True)
+
+    @classmethod
+    def get_create(cls, user_id):
+        session = DB.session()
+        user = session.query(cls).get(user_id)
+        if not user:
+            user = User(user_id=user_id)
+            session.add(user)
+            session.commit()
+        return user
+
+    def __str__(self):
+        return f"{self.name} ({self.user_id})"
 
 
 class Message(Base):

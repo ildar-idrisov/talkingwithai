@@ -13,7 +13,7 @@ def _generate_config():
     config.set('postgres', 'port', '5432')
     config.set('postgres', 'dbname', db_name)
 
-    with open('/talkingwithai/etc/config.ini', 'w') as configfile:
+    with open('/etc/config.ini', 'w') as configfile:
         config.write(configfile)
 
 
