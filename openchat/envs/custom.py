@@ -122,7 +122,7 @@ class CustomEnvironment(BaseEnvironment):
 
         return user_name, bot_name
 
-    def pre_dialog_for_convai2(self, agent, init_message, user_id):
+    def pre_dialog_for_convai2(self, agent, user_id, init_message):
         agent.clear_persona(self.histories, user_id)
         agent.add_persona(self.histories, user_id, init_message)
 

@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from db.models import Message
+from db.models import User
 
 from openchat.base import BaseAgent, DecoderLM
 
@@ -24,7 +26,8 @@ class BaseEnvironment(ABC):
         self.histories = {}
 
     def clear_histories(self, user_id):
-        self.histories[user_id] = {
+        User.get_create(user_id=user_id)
+        self.histories[user_id] = {#TODO: delete histories
             "user_message": [],
             "bot_message": [],
             "model_input": "",
@@ -33,13 +36,15 @@ class BaseEnvironment(ABC):
         }
 
     def add_user_message(self, user_id, text):
-        self.histories[user_id]["user_message"].append(text)
+        Message.add_user_message(user_id=user_id, content=text)
+        self.histories[user_id]["user_message"].append(text)#TODO: delete histories
 
     def add_bot_message(self, user_id, text):
-        self.histories[user_id]["bot_message"].append(text)
+        Message.add_bot_message(user_id=user_id, content=text)
+        self.histories[user_id]["bot_message"].append(text)#TODO: delete histories
 
     def make_model_input(self, user_id, user_input, agent):
-        prefix = self.histories[user_id]["prefix"]
+        prefix = self.histories[user_id]["prefix"]#TODO: delete histories
 
         if len(prefix) > 0:
             prefix = agent.suffix.join(prefix) + agent.suffix

@@ -6,7 +6,6 @@ from openchat.agents.reddit import RedditAgent
 from openchat.agents.safety import OffensiveAgent, SensitiveAgent
 from openchat.agents.unlikelihood import UnlikelihoodAgent
 from openchat.agents.wow import WizardOfWikipediaGenerationAgent
-from db.models import Message
 from openchat.envs.custom import CustomEnvironment
 from openchat.envs.interactive import InteractiveEnvironment
 from openchat.utils.terminal_utils import draw_openchat
@@ -40,7 +39,6 @@ class OpenChat(object):
 
     def predict_message(self, user_id, input_message):
         response_message = self.environment.message(self.agent, user_id, input_message)
-        Message.add_bot_message(user_id=user_id, content=response_message)
         return response_message
 
     def check_agent(self, model) -> str:

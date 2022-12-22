@@ -36,13 +36,13 @@ def pers_markup():
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if call.data == "pers1":
-        openchat.setup_persona(call.message.from_user.id, "Good man, likes science, IT, computer. He is from London")
+        openchat.setup_persona(call.message.chat.id, "Good man, likes science, IT, computer. He is from London")
         bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers2":
-        openchat.setup_persona(call.message.from_user.id, "Woman, tourist, from New York, USA, was in Africa")
+        openchat.setup_persona(call.message.chat.id, "Woman, tourist, from New York, USA, was in Africa")
         bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers3":
-        openchat.setup_persona(call.message.from_user.id, "Girl, student, likes anime and cats")
+        openchat.setup_persona(call.message.chat.id, "Girl, student, likes anime and cats")
         bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers4":
         bot.send_message(call.message.chat.id, "Not ready right now. Choose another option")
