@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from db.models import Message
 from db.models import User
+from db.models import Prefix
 
 from openchat.base import BaseAgent, DecoderLM
 
@@ -45,6 +46,7 @@ class BaseEnvironment(ABC):
 
     def make_model_input(self, user_id, user_input, agent):
         prefix = self.histories[user_id]["prefix"]#TODO: delete histories
+        prefix = Prefix.get_for_user(user_id)
 
         if len(prefix) > 0:
             prefix = agent.suffix.join(prefix) + agent.suffix
@@ -59,8 +61,10 @@ class BaseEnvironment(ABC):
         num_history_tokens = len(current_tokens)
 
         for u, m in zip(
-                reversed(self.histories[user_id]["user_message"]),
-                reversed(self.histories[user_id]["bot_message"]),
+                #reversed(self.histories[user_id]["user_message"]),#TODO: delete histories
+                #reversed(self.histories[user_id]["bot_message"]),
+                reversed(Message.get_user_message_for_user(user_id)),
+                reversed(Message.get_bot_message_for_user(user_id)),
         ):
 
             history = u + agent.suffix + m + agent.suffix
