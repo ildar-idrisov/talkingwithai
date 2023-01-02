@@ -58,6 +58,16 @@ class Message(Base):
     timestamp = Column(TIMESTAMP, nullable=False, default=func.now())
 
     @classmethod
+    def get_user_messages_for_user(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id, cls.is_from_user == True).all()
+
+    @classmethod
+    def get_bot_messages_for_user(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id, cls.is_from_user == False).all()
+
+    @classmethod
     def add_bot_message(cls, user_id: int, content: str):
         cls.create(user_id, content, is_from_user=False)
 
@@ -106,6 +116,11 @@ class Prefix(Base):
     user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id"), index=True)
     user = relationship("User", backref=backref("prefixes"))
     prefix = Column(String(256), nullable=False)
+
+    @classmethod
+    def get_for_user(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id).all()
 
     @classmethod
     def add(cls, user_id: int, prefix: str):
