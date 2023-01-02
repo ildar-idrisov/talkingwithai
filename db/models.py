@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional, List
+from typing import List
 
 from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, SmallInteger, String, Text, func
 from sqlalchemy.orm import backref, relationship
@@ -121,10 +121,10 @@ class Prefix(Base):
     prefix = Column(String(256), nullable=False)
 
     @classmethod
-    def get_for_user(cls, user_id: int) -> Optional[str]:
+    def get_for_user(cls, user_id: int) -> List[str]:
         session = DB.session()
-        prefix = session.query(cls.prefix).filter(cls.user_id == user_id).first()
-        return prefix[0] if prefix else None
+        prefixes = session.query(cls.prefix).filter(cls.user_id == user_id)
+        return [prefix[0] for prefix in prefixes]
 
     @classmethod
     def add(cls, user_id: int, prefix: str):
