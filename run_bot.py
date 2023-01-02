@@ -87,7 +87,7 @@ def donate_message(message):
                      # "*VISA*\n"
                      # "4374 6901 0038 9301\n\n"
                      "For all questions and suggestions, you can write to me\n"
-                     "https://t.me/Scientist_Futuration",
+                     "https://t.me/Scientist_Ft",
                      parse_mode='Markdown')
 
 
