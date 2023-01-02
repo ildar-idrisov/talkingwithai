@@ -23,6 +23,12 @@ class User(Base):
     enabled = Column(Boolean, nullable=False, default=True)
 
     @classmethod
+    def delete_user(cls, user_id: int):
+        session = DB.session()
+        session.query(cls).filter(cls.user_id == user_id).delete()
+        session.commit()
+
+    @classmethod
     def get_users_created_for_last_days(cls, days: int) -> int:
         session = DB.session()
         return session.query(cls).filter(datetime.now() - cls.created_at <= timedelta(days=days)).count()
@@ -52,7 +58,7 @@ class User(Base):
 class Message(Base):
     __tablename__ = "talkingwithai_message"
     message_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id"), index=True)
+    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
     user = relationship("User", backref=backref("messages"))
     content = Column(Text, nullable=False)
     is_from_user = Column(Boolean, nullable=False, index=True)
@@ -100,7 +106,7 @@ class Topic(Base):
     __tablename__ = "talkingwithai_topic"
 
     topic_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id"), index=True)
+    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
     user = relationship("User", backref=backref("topics"))
     topic = Column(String(256), nullable=False)
 
@@ -116,7 +122,7 @@ class Prefix(Base):
     __tablename__ = "talkingwithai_prefix"
 
     prefix_id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id"), index=True)
+    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
     user = relationship("User", backref=backref("prefixes"))
     prefix = Column(String(256), nullable=False)
 
