@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Optional, List
 
 from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, SmallInteger, String, Text, func
 from sqlalchemy.orm import backref, relationship
@@ -58,14 +59,16 @@ class Message(Base):
     timestamp = Column(TIMESTAMP, nullable=False, default=func.now())
 
     @classmethod
-    def get_user_messages_for_user(cls, user_id: int):
+    def get_user_messages_for_user(cls, user_id: int) -> List[str]:
         session = DB.session()
-        return session.query(cls).filter(cls.user_id == user_id, cls.is_from_user == True).all()
+        messages = session.query(cls.content).filter(cls.user_id == user_id, cls.is_from_user == True).all()
+        return [message[0] for message in messages]
 
     @classmethod
-    def get_bot_messages_for_user(cls, user_id: int):
+    def get_bot_messages_for_user(cls, user_id: int) -> List[str]:
         session = DB.session()
-        return session.query(cls).filter(cls.user_id == user_id, cls.is_from_user == False).all()
+        messages = session.query(cls.content).filter(cls.user_id == user_id, cls.is_from_user == False).all()
+        return [message[0] for message in messages]
 
     @classmethod
     def add_bot_message(cls, user_id: int, content: str):
@@ -118,9 +121,10 @@ class Prefix(Base):
     prefix = Column(String(256), nullable=False)
 
     @classmethod
-    def get_for_user(cls, user_id: int):
+    def get_for_user(cls, user_id: int) -> Optional[str]:
         session = DB.session()
-        return session.query(cls).filter(cls.user_id == user_id).all()
+        prefix = session.query(cls.prefix).filter(cls.user_id == user_id).first()
+        return prefix[0] if prefix else None
 
     @classmethod
     def add(cls, user_id: int, prefix: str):
