@@ -1,11 +1,42 @@
-<table border="1">
-    <tr>
-        <th>User Id</th>
-        <th>Name</th>
-    </tr>
-    {% for user in users %}
-        <tr>
-            <td>{{ user.user_id }}</td><td>{{ user.name }}</td>
-        </tr>
-    {% endfor %}
-</table>
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">&nbsp;</div>
+        <div class="col-md-4">
+            <form class="form-horizontal">
+                <h3 class="text-center mb-3">Statistics</h3>
+                <div class="mb-3">
+                    <label for="lastXmessageCnt" class="form-label">Msg count for last X minutes</label>
+                    <input type="text" class="form-control" id="lastXmessageCnt" placeholder="Minutes" value="{{ form_values.last_x_messages_count }}" name="last_x_messages_count">
+                </div>
+                <div class="mb-3">
+                    <label for="activeUsersCnt" class="form-label">Active users for last X days</label>
+                    <input type="text" class="form-control" id="activeUsersCnt" placeholder="Days" value="{{ form_values.active_users_count }}" name="active_users_count">
+                </div>
+                <div class="mb-3">
+                    <label for="newUsersCnt" class="form-label">New users count for last X days</label>
+                    <input type="text" class="form-control" id="newUsersCnt" placeholder="Days" value="{{ form_values.new_users_count }}" name="new_users_count">
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+            <table class="table">
+                <tr>
+                    <th>Message count for last {{ form_values.last_x_messages_count }} minutes</th>
+                    <td>{{ results.last_x_messages_count }}</td>
+                </tr>
+                <tr>
+                    <th>Active users for last {{ form_values.active_users_count }} days</th>
+                    <td>{{ results.active_users_count }}</td>
+                </tr>
+                <tr>
+                    <th>New users for last {{ form_values.new_users_count }} days</th>
+                    <td>{{ results.new_users_count }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-4">&nbsp;</div>
+    </div>
+{% endblock %}

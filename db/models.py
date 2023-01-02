@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, SmallInteger, String, Text, func
 from sqlalchemy.orm import backref, relationship
 
@@ -20,11 +22,24 @@ class User(Base):
     enabled = Column(Boolean, nullable=False, default=True)
 
     @classmethod
-    def get_create(cls, user_id):
+    def get_users_created_for_last_days(cls, days: int) -> int:
+        session = DB.session()
+        return session.query(cls).filter(datetime.now() - cls.created_at <= timedelta(days=days)).count()
+
+    @classmethod
+    def get_create(cls, user_id, nickname=None, name=None, tire=None, is_admin=False, messages_limit=0, model_input=None):
         session = DB.session()
         user = session.query(cls).get(user_id)
         if not user:
-            user = User(user_id=user_id)
+            user = User(
+                user_id=user_id,
+                nickname=nickname,
+                name=name,
+                tire=tire,
+                is_admin=is_admin,
+                messages_limit=messages_limit,
+                model_input=model_input
+            )
             session.add(user)
             session.commit()
         return user
@@ -43,12 +58,32 @@ class Message(Base):
     timestamp = Column(TIMESTAMP, nullable=False, default=func.now())
 
     @classmethod
+    def get_user_messages_for_user(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id, cls.is_from_user == True).all()
+
+    @classmethod
+    def get_bot_messages_for_user(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id, cls.is_from_user == False).all()
+
+    @classmethod
     def add_bot_message(cls, user_id: int, content: str):
         cls.create(user_id, content, is_from_user=False)
 
     @classmethod
     def add_user_message(cls, user_id: int, content: str):
         cls.create(user_id, content, is_from_user=True)
+
+    @classmethod
+    def get_active_users_for_last_days(cls, days: int) -> int:
+        session = DB.session()
+        return session.query(cls.user_id).filter(datetime.now() - cls.timestamp <= timedelta(days=days)).distinct().count()
+
+    @classmethod
+    def messages_count_for_last_x_minutes(cls, minutes: int) -> int:
+        session = DB.session()
+        return session.query(cls).filter(datetime.now() - cls.timestamp <= timedelta(minutes=minutes)).count()
 
     @classmethod
     def create(cls, user_id: int, content: str, is_from_user: bool):
@@ -83,8 +118,24 @@ class Prefix(Base):
     prefix = Column(String(256), nullable=False)
 
     @classmethod
+    def get_for_user(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id).all()
+
+    @classmethod
     def add(cls, user_id: int, prefix: str):
         session = DB.session()
         prefix = cls(user_id=user_id, prefix=prefix)
         session.add(prefix)
+        session.commit()
+
+    @classmethod
+    def get_user_prefixes(cls, user_id: int):
+        session = DB.session()
+        return session.query(cls).filter(cls.user_id == user_id).all()
+
+    @classmethod
+    def delete_persona(cls, user_id: int):
+        session = DB.session()
+        session.query(cls).filter(cls.user_id == user_id, cls.prefix.ilike('%your persona:%')).delete()
         session.commit()
