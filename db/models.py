@@ -155,7 +155,7 @@ class Prefix(Base):
     prefix_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
     user = relationship("User", backref=backref("prefixes"))
-    prefix = Column(String(256), nullable=False)
+    prefix = Column(String(2048), nullable=False)
     is_deleted = Column(Boolean(), default=False)
 
     @classmethod

@@ -12,7 +12,7 @@ from openchat.openchat import OpenChat
 DB.init_database_interface()
 DB.validate_database()
 bot = telebot.TeleBot("5621518936:AAHBQTGtFHei6tHUD3WI_tFRPrUA2BV6SRw")
-openchat = OpenChat(model='blender.small', device='cpu', environment='custom')
+openchat = OpenChat(model='blender.small', device='cpu', environment='custom', maxlen=2048)
 # openchat = OpenChat(model='blender.medium', device='cpu', environment='custom')
 
 

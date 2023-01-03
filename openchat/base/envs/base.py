@@ -28,6 +28,7 @@ class BaseEnvironment(ABC):
 
     def clear_histories(self, user_id):
         User.get_create(user_id=user_id)
+        User.clear_user_history(user_id=user_id)
         self.histories[user_id] = {#TODO: delete histories
             "user_message": [],
             "bot_message": [],
