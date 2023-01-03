@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import List
 
-from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, SmallInteger, String, Text, func
+from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, SmallInteger, String, Text, func, update
 from sqlalchemy.orm import backref, relationship
 
 from db.base import Base
@@ -18,14 +18,17 @@ class User(Base):
     tire = Column(SmallInteger, nullable=True)
     is_admin = Column(Boolean, nullable=False, default=False)
     messages_limit = Column(Integer, nullable=False, default=0)  # 0 - no limit
-    model_input = Column(String(256), nullable=True)
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())
     enabled = Column(Boolean, nullable=False, default=True)
+    is_deleted = Column(Boolean(), default=False)
 
     @classmethod
-    def delete_user(cls, user_id: int):
+    def clear_user_history(cls, user_id: int):
         session = DB.session()
-        session.query(cls).filter(cls.user_id == user_id).delete()
+        session.execute(update(ModelInput).where(ModelInput.user_id == user_id).values(is_deleted=True))
+        session.execute(update(Message).where(Message.user_id == user_id).values(is_deleted=True))
+        session.execute(update(Topic).where(Topic.user_id == user_id).values(is_deleted=True))
+        session.execute(update(Prefix).where(Prefix.user_id == user_id).values(is_deleted=True))
         session.commit()
 
     @classmethod
@@ -45,14 +48,34 @@ class User(Base):
                 tire=tire,
                 is_admin=is_admin,
                 messages_limit=messages_limit,
-                model_input=model_input
             )
             session.add(user)
+            if model_input:
+                model = ModelInput(
+                    user_id=user_id,
+                    model_name=model_input
+                )
+                session.add(model)
             session.commit()
         return user
 
     def __str__(self):
         return f"{self.name} ({self.user_id})"
+
+
+class ModelInput(Base):
+    __tablename__ = "talkingwithai_model_input"
+    model_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
+    user = relationship("User", backref=backref("model_inputs"))
+    model_name = Column(String(256), nullable=False)
+    is_deleted = Column(Boolean(), default=False)
+
+    @classmethod
+    def get_for_user(cls, user_id: int) -> List[str]:
+        session = DB.session()
+        messages = session.query(cls.model_name).filter(cls.user_id == user_id, cls.is_deleted == False).all()
+        return list(zip(*messages))[0] if messages else []
 
 
 class Message(Base):
@@ -63,17 +86,21 @@ class Message(Base):
     content = Column(Text, nullable=False)
     is_from_user = Column(Boolean, nullable=False, index=True)
     timestamp = Column(TIMESTAMP, nullable=False, default=func.now())
+    is_deleted = Column(Boolean(), default=False)
 
     @classmethod
     def get_user_messages_for_user(cls, user_id: int) -> List[str]:
         session = DB.session()
-        messages = session.query(cls.content).filter(cls.user_id == user_id, cls.is_from_user == True).all()
-        return [message[0] for message in messages]
+        messages = session.query(cls.content) \
+            .filter(cls.user_id == user_id, cls.is_from_user == True, cls.is_deleted == False) \
+            .all()
+        return list(zip(*messages))[0] if messages else []
 
     @classmethod
     def get_bot_messages_for_user(cls, user_id: int) -> List[str]:
         session = DB.session()
-        messages = session.query(cls.content).filter(cls.user_id == user_id, cls.is_from_user == False).all()
+        messages = session.query(cls.content) \
+            .filter(cls.user_id == user_id, cls.is_from_user == False, cls.is_deleted == False)
         return [message[0] for message in messages]
 
     @classmethod
@@ -87,7 +114,10 @@ class Message(Base):
     @classmethod
     def get_active_users_for_last_days(cls, days: int) -> int:
         session = DB.session()
-        return session.query(cls.user_id).filter(datetime.now() - cls.timestamp <= timedelta(days=days)).distinct().count()
+        return session.query(cls.user_id) \
+            .filter(datetime.now() - cls.timestamp <= timedelta(days=days)) \
+            .distinct() \
+            .count()
 
     @classmethod
     def messages_count_for_last_x_minutes(cls, minutes: int) -> int:
@@ -109,6 +139,7 @@ class Topic(Base):
     user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
     user = relationship("User", backref=backref("topics"))
     topic = Column(String(256), nullable=False)
+    is_deleted = Column(Boolean(), default=False)
 
     @classmethod
     def add(cls, user_id: int, topic: str):
@@ -125,11 +156,12 @@ class Prefix(Base):
     user_id = Column(Integer, ForeignKey("talkingwithai_user.user_id", ondelete="CASCADE"), index=True)
     user = relationship("User", backref=backref("prefixes"))
     prefix = Column(String(256), nullable=False)
+    is_deleted = Column(Boolean(), default=False)
 
     @classmethod
     def get_for_user(cls, user_id: int) -> List[str]:
         session = DB.session()
-        prefixes = session.query(cls.prefix).filter(cls.user_id == user_id)
+        prefixes = session.query(cls.prefix).filter(cls.user_id == user_id, cls.is_deleted == False)
         return [prefix[0] for prefix in prefixes]
 
     @classmethod
@@ -140,12 +172,9 @@ class Prefix(Base):
         session.commit()
 
     @classmethod
-    def get_user_prefixes(cls, user_id: int):
-        session = DB.session()
-        return session.query(cls).filter(cls.user_id == user_id).all()
-
-    @classmethod
     def delete_persona(cls, user_id: int):
         session = DB.session()
-        session.query(cls).filter(cls.user_id == user_id, cls.prefix.ilike('%your persona:%')).delete()
+        session.execute(
+            update(cls).where(cls.user_id == user_id, cls.prefix.ilike('%your persona:%')).values(is_deleted=True)
+        )
         session.commit()
