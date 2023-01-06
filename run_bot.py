@@ -3,6 +3,8 @@ import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from db.session import DB
+from db.models import Message
+from db.models import User
 from openchat.openchat import OpenChat
 
 # TODO: Store message.from_user info to DB, but remember GDPR
@@ -45,8 +47,9 @@ def callback_query(call):
         openchat.setup_persona(call.message.chat.id, "A young student girl, she often watches various anime series and films, and also reads manga. She is also a fan of cats and has several fluffy paws at home. She adores them and loves to take care of them, clean their litter box and play with them. She also loves to draw and create various illustrations of her favorite anime characters. Our character also appreciates education and tries to study successfully in order to realize her dreams in the future.")
         bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers4":
-        msg = bot.send_message(call.message.chat.id, "Describe the character you want to talk to."
-                                                     "For example: A young man who loves an active lifestyle, especially swimming, running and hiking, watches football and basketball on TV."
+        msg = bot.send_message(call.message.chat.id, "Describe the character you want to talk to.\n"
+                                                     "For example:\n"
+                                                     "A young man who loves an active lifestyle, especially swimming, running and hiking, watches football and basketball on TV.\n"
                                                      "Or just list topics of conversation")
         bot.register_next_step_handler(msg, setup_custom_persona)
 
@@ -70,31 +73,38 @@ def translation_message(message):
     bot.send_message(message.chat.id, "Translation of word to several lang. Not ready right now")
 
 
-@bot.message_handler(commands=['stat'])  # TODO: statistics
+@bot.message_handler(commands=['stat'])
 def statistics_message(message):
-    bot.send_message(message.chat.id, "Statistics. Not ready right now")
+    mes_period_in_min = 60
+    usr_period_in_days = 30
+    res_last_x_messages_count = Message.messages_count_for_last_x_minutes(mes_period_in_min)
+    res_active_users_count = Message.get_active_users_for_last_days(usr_period_in_days)
+    res_new_users_count = User.get_users_created_for_last_days(usr_period_in_days)
+    bot.send_message(message.chat.id, "Statistics\n"
+                                      f"Messages in {mes_period_in_min} minutes: {res_last_x_messages_count}\n"
+                                      f"Active users for {usr_period_in_days} days: {res_active_users_count}\n"
+                                      f"Unique users for {usr_period_in_days} days: {res_new_users_count}")
 
 
 @bot.message_handler(commands=['donate'])
 def donate_message(message):
     bot.send_message(message.chat.id,
-                     "*Hi, and thank you*\n"
-                     "I'm learning English and that's why I created this AI bot. And I wanted to share with you. I hope, you like it.\n"
+                     "Hi, and thank you\n"
+                     "We are learning English and that's why we created this AI bot. And we wanted to share with you. We hope, you like it.\n"
                      "You can donate any amount of money. Your money will be used to pay for servers and improve the bot.\n"
-                     "Sincerely, Scientist\n\n"
+                     "Sincerely, TalkingWithAI team\n\n"
                      "Patreon link\n"
                      "https://www.patreon.com/talkingwithai\n\n"
                      "Boosty link\n"
                      "https://boosty.to/talkingwithai\n\n"
-                     "*ETH wallet (or any ERC20/BEP20 token)*\n"
+                     "ETH wallet (or any ERC20/BEP20 token)\n"
                      "0xE7D1C11fefcb8c559DDb8838423553a8FB242712\n\n"
                      # "Bitcoin wallet\n"#TODO: add Bitcoin
                      # "\n\n"
-                     # "*VISA*\n"
+                     # "VISA\n"
                      # "4374 6901 0038 9301\n\n"
-                     "For all questions and suggestions, you can write to me\n"
-                     "https://t.me/Scientist_Ft",
-                     parse_mode='Markdown')
+                     "For all questions and suggestions, you can write to us\n"
+                     "https://t.me/Scientist_Ft")
 
 
 @bot.message_handler(content_types=['text'])
@@ -111,17 +121,10 @@ def audio_message(message):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', action='store', type=str, help='Model name')
-    parser.add_argument('--gpu', help='Run on gpu, otherwise on cpu', action="store_true")
+    parser.add_argument('--model', default='blender.small', action='store', type=str, help='Model name')
+    parser.add_argument('--device', default='cpu', help='Run on gpu or cpu', action="store_true")
     args = parser.parse_args()
 
-    model = 'blender.small'
-    device = 'cpu'
-    if args.model:
-        model = args.model
-    if args.gpu:
-        device = 'gpu'
-
-    openchat = OpenChat(model='blender.small', device=device, environment='custom', maxlen=2048)
+    openchat = OpenChat(model=args.model, device=args.device, environment='custom', maxlen=2048)
 
     bot.infinity_polling()
