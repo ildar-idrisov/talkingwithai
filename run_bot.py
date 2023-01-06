@@ -1,3 +1,4 @@
+import argparse
 import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -12,7 +13,7 @@ from openchat.openchat import OpenChat
 DB.init_database_interface()
 DB.validate_database()
 bot = telebot.TeleBot("5621518936:AAHBQTGtFHei6tHUD3WI_tFRPrUA2BV6SRw")
-openchat = OpenChat(model='blender.small', device='cpu', environment='custom', maxlen=2048)
+# openchat = OpenChat(model='blender.small', device='cpu', environment='custom', maxlen=2048)
 # openchat = OpenChat(model='blender.medium', device='cpu', environment='custom')
 
 
@@ -104,4 +105,18 @@ def audio_message(message):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', action='store', type=str, help='Model name')
+    parser.add_argument('--gpu', help='Run on gpu, otherwise on cpu', action="store_true")
+    args = parser.parse_args()
+
+    model = 'blender.small'
+    device = 'cpu'
+    if args.model:
+        model = args.model
+    if args.gpu:
+        device = 'gpu'
+
+    openchat = OpenChat(model='blender.small', device=device, environment='custom', maxlen=2048)
+
     bot.infinity_polling()
