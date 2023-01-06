@@ -105,31 +105,34 @@ class Message(Base):
 
     @classmethod
     def add_bot_message(cls, user_id: int, content: str):
-        cls.create(user_id, content, is_from_user=False)
+        return cls._create(user_id, content, is_from_user=False)
 
     @classmethod
     def add_user_message(cls, user_id: int, content: str):
-        cls.create(user_id, content, is_from_user=True)
+        return cls._create(user_id, content, is_from_user=True)
 
     @classmethod
     def get_active_users_for_last_days(cls, days: int) -> int:
         session = DB.session()
         return session.query(cls.user_id) \
-            .filter(datetime.now() - cls.timestamp <= timedelta(days=days)) \
+            .filter(cls.is_from_user == True, datetime.now() - cls.timestamp <= timedelta(days=days)) \
             .distinct() \
             .count()
 
     @classmethod
     def messages_count_for_last_x_minutes(cls, minutes: int) -> int:
         session = DB.session()
-        return session.query(cls).filter(datetime.now() - cls.timestamp <= timedelta(minutes=minutes)).count()
+        return session.query(cls) \
+            .filter(cls.is_from_user == True, datetime.now() - cls.timestamp <= timedelta(minutes=minutes)) \
+            .count()
 
     @classmethod
-    def create(cls, user_id: int, content: str, is_from_user: bool):
+    def _create(cls, user_id: int, content: str, is_from_user: bool):
         session = DB.session()
         msg = cls(user_id=user_id, content=content, is_from_user=is_from_user)
         session.add(msg)
         session.commit()
+        return msg
 
 
 class Topic(Base):
@@ -147,6 +150,7 @@ class Topic(Base):
         topic = cls(user_id=user_id, topic=topic)
         session.add(topic)
         session.commit()
+        return topic
 
 
 class Prefix(Base):
@@ -174,7 +178,7 @@ class Prefix(Base):
     @classmethod
     def delete_persona(cls, user_id: int):
         session = DB.session()
-        session.execute(
-            update(cls).where(cls.user_id == user_id, cls.prefix.ilike('%your persona:%')).values(is_deleted=True)
-        )
+        session.query(cls) \
+            .filter(cls.user_id == user_id, cls.prefix.ilike('%your persona:%')) \
+            .update({'is_deleted': True}, synchronize_session=False)
         session.commit()
