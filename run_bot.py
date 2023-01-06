@@ -33,7 +33,6 @@ def pers_markup():
                InlineKeyboardButton("Custom", callback_data="pers4"))
     return markup
 
-
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
     if call.data == "pers1":
@@ -46,8 +45,14 @@ def callback_query(call):
         openchat.setup_persona(call.message.chat.id, "A young student girl, she often watches various anime series and films, and also reads manga. She is also a fan of cats and has several fluffy paws at home. She adores them and loves to take care of them, clean their litter box and play with them. She also loves to draw and create various illustrations of her favorite anime characters. Our character also appreciates education and tries to study successfully in order to realize her dreams in the future.")
         bot.send_message(call.message.chat.id, "Ok, let's talk")
     elif call.data == "pers4":
-        bot.send_message(call.message.chat.id, "Not ready right now. Choose another option")
+        msg = bot.send_message(call.message.chat.id, "Describe the character you want to talk to."
+                                                     "For example: A young man who loves an active lifestyle, especially swimming, running and hiking, watches football and basketball on TV."
+                                                     "Or just list topics of conversation")
+        bot.register_next_step_handler(msg, setup_custom_persona)
 
+def setup_custom_persona(message):
+    openchat.setup_persona(message.chat.id, message.text)
+    bot.send_message(message.chat.id, "Ok, let's talk")
 
 @bot.message_handler(commands=['choose'])
 def choose_persona(message):
