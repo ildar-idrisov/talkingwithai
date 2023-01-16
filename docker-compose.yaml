@@ -24,7 +24,7 @@ services:
         DATABASE_NAME: ${DATABASE_NAME}
     restart: on-failure
     command: bash -c "
-      python /talkingwithai/openchat/db/init_db.py &&
+      python /talkingwithai/db/init_db.py &&
       python /talkingwithai/run_bot.py"
     depends_on:
       postgres:
