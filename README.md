@@ -2,6 +2,9 @@
 
 An AI chatbot for practicing foreign language skills
 
+## Talking With AI License
+[Noncommercial License 1.0.0](https://github.com/ildar-idrisov/talkingwithai/blob/main/LICENSE)
+
 ## OpenChat License
 ```
 Copyright 2021 Hyunwoong Ko.
