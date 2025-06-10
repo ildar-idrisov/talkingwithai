@@ -1,6 +1,12 @@
 # Talking With AI
 
-An AI chatbot for practicing foreign language skills
+Talking With AI is an interactive AI chatbot designed to help users practice and improve their foreign language speaking skills through natural conversation.
+github.com
+
+By simulating immersive dialogue and offering contextually relevant responses, it enables learners to build confidence and fluency at their own pace.
+github.com
+
+Perfect for learners of all levels, Talking With AI provides a convenient and engaging way to reinforce language proficiency outside traditional classroom settings.
 
 ## Talking With AI License
 [Noncommercial License 1.0.0](https://github.com/ildar-idrisov/talkingwithai/blob/main/LICENSE)
